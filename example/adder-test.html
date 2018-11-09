@@ -2,25 +2,24 @@
 <script src="adder.js"></script>
 <script>
   tests({
-
-    'adds numbers': function () {
+    "adds numbers": function() {
       eq(6, add(2, 4));
       eq(6.6, add(2.6, 4));
     },
 
-    'subtracts numbers': function () {
+    "subtracts numbers": function() {
       eq(-2, add(2, -4));
     },
 
     // Additional Tests
 
-    'prints word': function () {
-      eq('Kyle', printWord('Kyle'));
+    "prints word": function() {
+      eq("Kyle", printWord("Kyle"));
     },
 
-    'says hello': function () {
-      eq('Well hello to you, Kyle', saysHello('Kyle'));
+    "says hello": function() {
+      // eq('Well hello to you, Kyle', saysHello('Kyle'));
+      fail();
     }
-
   });
 </script>
