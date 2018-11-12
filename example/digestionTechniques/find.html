@@ -31,64 +31,62 @@
   // Requirements:
 
   // Example 1: Callback should execute.
-  // find([1], function(currentElement) {
-  //   console.log("test");
+  // find([1], function() {
   // });
   // Expect: Callback should run once.
 
   // Example 2: Callback should execute once for each index that does not return truthy.
-  // find([1, 2], function(currentElement) {
-  //   return false;
+  // find([1, 2], function() {
   // });
   // Expect: Callback should run twice.
 
-  // Example 3: Callback should not execute after a truthy value has been returned.
-  // find([1, 2], function(currentElement) {
-  //   return true;
-  // });
-  // Expect: Callback should run once.
-
   // ----------
 
-  // Example 4: Callback has access to ith element of the array.
+  // Example 3: Callback has access to ith element of the array.
   // find([1], function(currentElement) {
   //   console.log(currentElement);
   // });
   // Expect: currentElement === 1;
 
-  // Example 5: Callback has access to index of element being processed in the array.
+  // Example 4: Callback has access to index of element being processed in the array.
   // find([1], function(currentElement, currentIndex) {
   //   console.log(currentIndex);
   // });
   // Expect: currentIndex === 0;
 
-  // Example 6: Callback has access to originalArray.
+  // Example 5: Callback has access to originalArray.
   // find([1], function(currentElement, currentIndex, originalArray) {
   //   console.log(originalArray);
   // });
   // Expect: originalArray[0] === 1;
   // Expect: originalArray.length === 1;
 
-  // Example 7: Callback should accept an optional this argument.
-  // var returnedValue = find([1], function(currentElement) {
+  // Example 6: Callback should accept an optional this argument.
+  // find([1], function(currentElement) {
   //   console.log(this.description);
   // }, {description: 'This is an optional this argument.'});
 
   // ----------
+
+  // Example 7: Callback should not execute after a truthy value has been returned.
+  // find([1, 2], function(currentElement) {
+  //   return true;
+  // });
+  // Expect: Callback should run once.
 
   // Example 8: It should return currentElement if callback evaluates to truthy.
   // var originalValue = 1
   // var returnedValue = find([originalValue], function(currentElement) {
   //   return true;
   // });
-  // Expect: currentElement === returnedValue;
+  // Expect: originalValue === returnedValue;
 
   // Example 9: It should not return currentElement if callback evaluates to falsey.
   // var originalValue = 1
   // var returnedValue = find([originalValue], function(currentElement) {
   //   return false;
   // });
-  // Expect: currentElement === returnedValue;
+  // Expect: originalValue !== returnedValue;
 
   // Example 10: It should return only the value of the first element that evaluates to truthy.
   // var returnedValue = find([1,2,3], function(currentElement) {
@@ -100,7 +98,7 @@
   // var returnedValue = find([1], function(currentElement) {
   //   return false;
   // });
-  // Expect: returnedValue === false;
+  // Expect: returnedValue === undefined;
 
   // ----------
 
@@ -114,51 +112,115 @@
 
   // -----------------------------
 
+  function find(originalArray, callback, optionalThis) {
+    var findCallback = callback;
+
+    // If optionalThis is passed to find.
+    if (optionalThis) {
+      findCallback = findCallback.bind(optionalThis);
+    }
+
+    for (var i = 0; i < originalArray.length; i++) {
+      var callbackResult = findCallback(originalArray[i], i, originalArray);
+      if (callbackResult) {
+        return originalArray[i];
+      }
+    }
+  }
+
   tests({
     "Callback should execute.": function() {
-      fail();
+      var numberOfTimeCallbackHasRun = 0;
+      find([1], function() {
+        numberOfTimeCallbackHasRun++;
+      });
+      eq(numberOfTimeCallbackHasRun, 1);
     },
     "Callback should execute once for each index that does not return truthy.": function() {
-      fail();
-    },
-    "Callback should not execute after a truthy value has been returned.": function() {
-      fail();
+      var numberOfTimeCallbackHasRun = 0;
+      find([1, 2], function() {
+        numberOfTimeCallbackHasRun++;
+      });
+      eq(numberOfTimeCallbackHasRun, 2);
     },
 
     // ----------
 
     "Callback has access to ith element of the array": function() {
-      fail();
+      find([1], function(currentElement) {
+        eq(currentElement, 1);
+      });
     },
-    "Callback has access to index of element being processed in the array": function() {
-      fail();
+    "Callback has access to index": function() {
+      find([1], function(currentElement, currentIndex) {
+        eq(currentIndex, 0);
+      });
     },
     "Callback has access to originalArray.": function() {
-      fail();
+      find([1], function(currentElement, currentIndex, originalArray) {
+        eq(originalArray[0], 1);
+        eq(originalArray.length, 1);
+      });
     },
     "Callback should accept an optional this argument.": function() {
-      fail();
+      find(
+        [1],
+        function() {
+          eq(this.description, "This is an optional this argument.");
+        },
+        {
+          description: "This is an optional this argument."
+        }
+      );
     },
 
     // ----------
 
+    "Callback should not execute after a truthy value has been returned.": function() {
+      var numberOfTimeCallbackHasRun = 0;
+      find([1, 2], function(currentElement) {
+        numberOfTimeCallbackHasRun++;
+        return true;
+      });
+      eq(numberOfTimeCallbackHasRun, 1);
+    },
+
     "It should return currentElement if callback evaluates to truthy.": function() {
-      fail();
+      var originalValue = 1;
+      var returnedValue = find([originalValue], function(currentElement) {
+        return true;
+      });
+      eq(originalValue, returnedValue);
     },
     "It should not return currentElement if callback evaluates to falsey.": function() {
-      fail();
+      var originalValue = 1;
+      var returnedValue = find([originalValue], function(currentElement) {
+        return false;
+      });
+      eq(originalValue !== returnedValue, true);
     },
     "It should return only the value of the first element that evaluates to truthy.": function() {
-      fail();
+      var returnedValue = find([1, 2, 3], function(currentElement) {
+        return currentElement > 1;
+      });
+      eq(returnedValue, 2);
     },
     "It should return undefined if no element evaluates to truthy when passed to callback.": function() {
-      fail();
+      var returnedValue = find([1], function(currentElement) {
+        return false;
+      });
+      eq(returnedValue, undefined);
     },
 
     // ----------
 
     "It should not mutate the array on which it is called.": function() {
-      fail();
+      var originalArray = [1];
+      var duplicateOriginalArray = originalArray;
+      var returnedValue = find(originalArray, function(currentElement) {
+        return false;
+      });
+      eq(duplicateOriginalArray, originalArray);
     }
   });
 </script>
