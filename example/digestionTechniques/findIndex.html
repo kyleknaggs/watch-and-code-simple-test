@@ -11,12 +11,12 @@
   // });
 
   // Function signature:
-  // findIndex(originalArray, callback[, optionalThis])
+  // findIndex(array, callback[, optionalThis])
 
   // Callback Parameters:
   // currentValue
   // optional currentIndex
-  // optional originalArray
+  // optional array
 
   // Return value:
   // A number that is either:
@@ -54,11 +54,11 @@
   //   Expect: currentIndex === 0;
   // });
 
-  // 6) Callback has access to originalArray.
-  // findIndex([1], function(currentElement, currentIndex, originalArray) {
-  //   console.log(originalArray);
-  //   Expect: originalArray[0] === 1;
-  //   Expect: originalArray.length === 1;
+  // 6) Callback has access to array.
+  // findIndex([1], function(currentElement, currentIndex, array) {
+  //   console.log(array);
+  //   Expect: array[0] === 1;
+  //   Expect: array.length === 1;
   // });
 
   // 7) Callback should accept optionalThis.
@@ -97,7 +97,7 @@
   // });
   // Expect: indexToBeReturned === -1;
 
-  // 12) It should return -1 if originalArray.length is 0.
+  // 12) It should return -1 if array.length is 0.
   // findIndex([], function(currentElement) {
   //   return currentElement > 1;
   // });
@@ -105,71 +105,53 @@
 
   // -----------------------------
 
-  function findIndex() {}
+  function findIndex(array, callback) {
+    for (var i = 0; i < array.length; i++) {
+      callback(array[i], i, array);
+    }
+  }
 
   tests({
     "1) Executes callback.": function() {
-      fail();
-      /*
       var numberOfTimeCallbackHasRun = 0;
-      find([1], function() {
+      findIndex([1], function() {
         numberOfTimeCallbackHasRun++;
       });
       eq(numberOfTimeCallbackHasRun, 1);
-      */
     },
     "2) Executes callback for every index in the array.": function() {
-      fail();
-      /*
       var numberOfTimeCallbackHasRun = 0;
-      find([1, 2], function() {
+      findIndex([1, 2], function() {
         numberOfTimeCallbackHasRun++;
       });
       eq(numberOfTimeCallbackHasRun, 2);
-      */
     },
 
     "3) Executes callback when there are holes in the array.": function() {
-      fail();
-      /*
-      find([1], function(currentElement) {
-        eq(currentElement, 1);
+      var numberOfTimeCallbackHasRun = 0;
+      findIndex([1, , 2], function(currentElement) {
+        numberOfTimeCallbackHasRun++;
       });
-      */
+      eq(numberOfTimeCallbackHasRun, 3);
     },
 
     // -----------------------------
 
     "4) Callback has access to ith element of the array.": function() {
-      fail();
-      /*
-      find([1], function(currentElement, currentIndex) {
-        eq(currentIndex, 0);
+      findIndex([1], function(currentElement) {
+        eq(currentElement, 1);
       });
-      */
     },
     "5) Callback has access to index.": function() {
-      fail();
-      /*
-      find([1], function(currentElement, currentIndex, originalArray) {
-        eq(originalArray[0], 1);
-        eq(originalArray.length, 1);
+      findIndex([1], function(currentElement, currentIndex) {
+        eq(currentIndex, 0);
       });
-      */
     },
-    "6) Callback has access to originalArray.": function() {
-      fail();
-      /*
-      find(
-        [1],
-        function() {
-          eq(this.description, "This is an optional this argument.");
-        },
-        {
-          description: "This is an optional this argument."
-        }
-      );
-      */
+    "6) Callback has access to array.": function() {
+      findIndex([1], function(currentElement, currentIndex, array) {
+        eq(array[0], 1);
+        eq(array.length, 1);
+      });
     },
 
     "7) Callback should accept optionalThis.": function() {
@@ -231,15 +213,15 @@
       */
     },
 
-    "12) It should return -1 if originalArray.length is 0.": function() {
+    "12) It should return -1 if array.length is 0.": function() {
       fail();
       /*
-      var originalArray = [1];
-      var duplicateOriginalArray = originalArray;
-      var returnedValue = find(originalArray, function(currentElement) {
+      var array = [1];
+      var duplicatearray = array;
+      var returnedValue = find(array, function(currentElement) {
         return false;
       });
-      eq(duplicateOriginalArray, originalArray);
+      eq(duplicatearray, array);
       */
     }
   });
