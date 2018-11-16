@@ -23,88 +23,6 @@
   // The index of the 1st element in the array that satisfies the provided test.
   // Or -1.
 
-  // Requirements:
-
-  // 1) Executes callback.
-  // findIndex([1], function() {
-  // });
-  // Expect: Callback should run once.
-
-  // 2) Executes callback for every index in the array.
-  // findIndex([1, 2], function() {
-  // });
-  // Expect: Callback should run twice.
-
-  // 3) Executes callback when there are holes in the array.
-  // findIndex([1, , 2], function() {
-  // });
-  // Expect: Callback should run three times.
-
-  // -----------------------------
-
-  // 4) Callback has access to ith element of the array.
-  // findIndex([1], function(currentElement) {
-  //   console.log(currentElement);
-  //   Expect: currentElement === 1;
-  // });
-
-  // 5) Callback has access to index.
-  // findIndex([1], function(currentElement, currentIndex) {
-  //   console.log(currentIndex);
-  //   Expect: currentIndex === 0;
-  // });
-
-  // 6) Callback has access to array.
-  // findIndex([1], function(currentElement, currentIndex, array) {
-  //   console.log(array);
-  //   Expect: array[0] === 1;
-  //   Expect: array.length === 1;
-  // });
-
-  // 7) Callback should accept optionalThis.
-  // findIndex([1], function(currentElement) {
-  //   console.log(this.description);
-  //   Expect: this.description === 'This is an optional this argument.';
-  // }, {description: 'This is an optional this argument.'});
-
-  // -----------------------------
-
-  // 8) It should return a number.
-  // var indexToBeReturned = findIndex([1], function(currentElement) {
-  //   return true;
-  // });
-  // Expect: typeof(indexToBeReturned) === 'number';
-
-  // -----------------------------
-
-  // 9) It should not execute callback after callback returns truthy.
-  // findIndex([1, 2], function(currentElement) {
-  //   return true;
-  // });
-  // Expect: Callback should run once.
-
-  // 10) It should return the index of the first element that evaluates to truthy.
-  // findIndex([1, 2, 3], function(currentElement) {
-  //   return currentElement > 1;
-  // });
-  // Expect: indexToBeReturned === 1;
-
-  // -----------------------------
-
-  // 11) It should return -1 if no elements evaluate to truthy.
-  // findIndex([1], function(currentElement) {
-  //   return currentElement > 1;
-  // });
-  // Expect: indexToBeReturned === -1;
-
-  // 12) It should return -1 if array.length is 0.
-  // findIndex([], function(currentElement) {
-  //   return currentElement > 1;
-  // });
-  // Expect: indexToBeReturned === -1;
-
-  // -----------------------------
-
   function findIndex(array, callback, optionalThis) {
     var findIndexCallback = callback;
 
@@ -122,22 +40,21 @@
   }
 
   tests({
-    "1) Executes callback.": function() {
+    "1) It should call callback.": function() {
       var numberOfTimeCallbackHasRun = 0;
       findIndex([1], function() {
         numberOfTimeCallbackHasRun++;
       });
       eq(numberOfTimeCallbackHasRun, 1);
     },
-    "2) Executes callback for every index in the array.": function() {
+    "2) It should call callback for every index in the array.": function() {
       var numberOfTimeCallbackHasRun = 0;
       findIndex([1, 2], function() {
         numberOfTimeCallbackHasRun++;
       });
       eq(numberOfTimeCallbackHasRun, 2);
     },
-
-    "3) Executes callback when there are holes in the array.": function() {
+    "3) It should call callback when there is a hole in the array.": function() {
       var numberOfTimeCallbackHasRun = 0;
       findIndex([1, , 2], function(currentElement) {
         numberOfTimeCallbackHasRun++;
@@ -145,19 +62,17 @@
       eq(numberOfTimeCallbackHasRun, 3);
     },
 
-    // -----------------------------
-
-    "4) Callback has access to ith element of the array.": function() {
+    "4) Callback should have access to ith element of the array.": function() {
       findIndex([1], function(currentElement) {
         eq(currentElement, 1);
       });
     },
-    "5) Callback has access to index.": function() {
+    "5) Callback should have access to index.": function() {
       findIndex([1], function(currentElement, currentIndex) {
         eq(currentIndex, 0);
       });
     },
-    "6) Callback has access to array.": function() {
+    "6) Callback should have access to array.": function() {
       findIndex([1], function(currentElement, currentIndex, array) {
         eq(array[0], 1);
         eq(array.length, 1);
@@ -174,8 +89,6 @@
       );
     },
 
-    // -----------------------------
-
     "8) It should return a number.": function() {
       var indexToBeReturned = findIndex([1], function(currentElement) {
         return true;
@@ -183,9 +96,7 @@
       eq(typeof indexToBeReturned, "number");
     },
 
-    // -----------------------------
-
-    "9) It should not execute callback after callback returns truthy.": function() {
+    "9) It should not call callback after callback returns truthy.": function() {
       var numberOfTimeCallbackHasRun = 0;
       findIndex([1, 2], function(currentElement) {
         numberOfTimeCallbackHasRun++;
@@ -199,8 +110,6 @@
       });
       eq(indexToBeReturned, 1);
     },
-
-    // -----------------------------
 
     "11) It should return -1 if no elements evaluate to truthy.": function() {
       var indexToBeReturned = findIndex([1], function(currentElement) {
